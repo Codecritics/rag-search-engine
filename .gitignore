@@ -1,0 +1,9 @@
+data/
+uv.lock
+#add python cache files
+__pycache__/
+*.py[cod]
+
+
+.venv/
+.idea/
