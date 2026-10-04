@@ -18,6 +18,8 @@ def load_movies() -> list[Movie]:
         data = json.load(f)
     return data["movies"]
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+
+PROJECT_ROOT: Any = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 DATA_PATH = os.path.join(PROJECT_ROOT, "data", "movies.json")
+STOPWORD_PATH = os.path.join(PROJECT_ROOT, "data", "stopwords.txt")
 DEFAULT_SEARCH_LIMIT = 10
