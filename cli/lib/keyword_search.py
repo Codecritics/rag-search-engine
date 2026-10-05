@@ -1,5 +1,11 @@
-from .search_utils import load_movies, DEFAULT_SEARCH_LIMIT, Movie, tokenize_text
+from .search_utils import (
+    load_movies,
+    DEFAULT_SEARCH_LIMIT,
+    Movie,
+    tokenize_text
+)
 
+from .build_utils import InvertedIndex
 
 def search_command(query: str, limit: int = DEFAULT_SEARCH_LIMIT) -> list[Movie]:
     """
@@ -12,16 +18,19 @@ def search_command(query: str, limit: int = DEFAULT_SEARCH_LIMIT) -> list[Movie]
     Returns:
         list[dict]: A list of search results, each represented as a dictionary.
     """
-    movies = load_movies()
-    # Placeholder for actual BM25 search implementation
-    # For now, we will return a simple filtered list based on the query
-    results: list[Movie] = []
+    idx = InvertedIndex()
+    idx.load()
     query_tokens = tokenize_text(query)
-    print(query_tokens)
-    for movie in movies:
-        title_tokens = tokenize_text(movie["title"])
-        if has_matching_token(query_tokens, title_tokens):
-            results.append(movie)
+    seen, results = set(), []
+    for query_token in query_tokens:
+        matching_doc_ids = idx.get_documents(query_token)
+        for doc_id in matching_doc_ids:
+            if doc_id in seen:
+                continue
+            seen.add(doc_id)
+            doc = idx.docmap[doc_id]
+            results.append(doc)
+
     return results[:limit]
 
 

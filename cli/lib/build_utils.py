@@ -1,6 +1,6 @@
 from collections import defaultdict
 from dataclasses import dataclass, field
-from pickle import dump
+import pickle
 import os
 from .search_utils import (
     tokenize_text, load_movies, PROJECT_ROOT
@@ -27,9 +27,14 @@ class InvertedIndex:
     def save(self) -> None:
         os.makedirs(CACHE_DIR, exist_ok=True)
         with open(self.index_path, "wb") as f:
-            dump(self.index, f)
+            pickle.dump(self.index, f)
         with open(self.docmap_path, "wb") as f:
-            dump(self.docmap, f)
+            pickle.dump(self.docmap, f)
+    def load(self):
+        with open(self.index_path, "rb") as f:
+            self.index = pickle.load(f)
+        with open(self.docmap_path, "rb") as f:
+            self.docmap = pickle.load(f)
 
     def get_documents(self, term: str) -> list[int]:
         doc_ids = self.index.get(term, set())
