@@ -1,4 +1,5 @@
 data/
+cache/
 uv.lock
 #add python cache files
 __pycache__/

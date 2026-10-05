@@ -1,9 +1,4 @@
-import string
-from typing import Any
-from unittest import result
-from nltk.stem import PorterStemmer
-
-from .search_utils import load_movies, STOPWORD_PATH, DEFAULT_SEARCH_LIMIT, Movie
+from .search_utils import load_movies, DEFAULT_SEARCH_LIMIT, Movie, tokenize_text
 
 
 def search_command(query: str, limit: int = DEFAULT_SEARCH_LIMIT) -> list[Movie]:
@@ -29,36 +24,6 @@ def search_command(query: str, limit: int = DEFAULT_SEARCH_LIMIT) -> list[Movie]
             results.append(movie)
     return results[:limit]
 
-def preprocess_text(text: str) -> str:
-    text = text.lower()
-    text = text.translate(str.maketrans('', '', string.punctuation))
-    return text
-
-def load_stopwords() -> list[str]:
-    with open(STOPWORD_PATH, "r", encoding="utf-8") as f:
-        stopwords = [preprocess_text(word) for word in f.read().splitlines()]
-    return stopwords
-
-
-STOPWORDS = load_stopwords()
-def tokenize_text(text: str) -> list[str]:
-    text = preprocess_text(text)
-    tokens = text.split()
-    valid_tokens = []
-    for token in tokens:
-        if token:
-            valid_tokens.append(token)
-    filtered_words = []
-
-    for word in valid_tokens:
-        if word not in STOPWORDS:
-
-            filtered_words.append(word)
-    stemmer = PorterStemmer()
-    stemmed_words = []
-    for word in filtered_words:
-        stemmed_words.append(stemmer.stem(word))
-    return stemmed_words
 
 def has_matching_token(query_tokens: list[str], title_tokens: list[str]) -> bool:
     for query_token in query_tokens:
